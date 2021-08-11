@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  maria_db:
+    image: mariadb:10
+    container_name: "maria_db"
+    ports:
+      - 13306:3306 # 체크용으로 port forwarding
+    
+    env_file: db/.env
+    environment:
+      TZ: Asia/Seoul
+    restart: always
+
+  crawler:
+    # restart: always
+    build:
+        context: ./crawler
+    container_name: "jmcrawler"
+    volumes:
+    - ./crawler/data:/usr/src/app/data
