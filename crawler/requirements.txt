@@ -1,0 +1,6 @@
+requests==2.22.0
+python-dotenv==0.14.0
+PyMySQL==1.0.2
+tqdm==4.54.1
+lxml==4.5.0
+pandas==1.2.2
