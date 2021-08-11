@@ -11,6 +11,8 @@ services:
     environment:
       TZ: Asia/Seoul
     restart: always
+    volumes:
+    - ./db/conf.d:/etc/mysql/conf.d
 
   crawler:
     # restart: always
