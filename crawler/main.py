@@ -35,6 +35,7 @@ def convert_str_int(data):
 
 def create_lat_lon(data): # 위경도 데이터 추출 with kakaoAPI
     address = data['주소']
+    # print(address)
     if address == '':
         return pd.Series((None, None))
     url = 'https://dapi.kakao.com/v2/local/search/address.json'
