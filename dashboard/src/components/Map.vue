@@ -20,7 +20,7 @@ export default {
 
             })
         });
-        // const layer = new ThreeLayer('three');
+        const layer = new ThreeLayer('three');
         // var center = map.getCenter();
 
         var layer = new maptalks.VectorLayer('vector').addTo(map);
