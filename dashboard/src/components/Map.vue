@@ -21,7 +21,7 @@ export default {
             })
         });
         const layer = new ThreeLayer('three');
-        // var center = map.getCenter();
+        var center = map.getCenter();
 
         var layer = new maptalks.VectorLayer('vector').addTo(map);
         for (var i of this.$store.state.tableData.result){
