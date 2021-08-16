@@ -34,11 +34,14 @@ type Company struct {
 
 func (p Company) get(sid string) (companies []Company, err error) {
 
-	rows, _ := db.Query("SELECT id, name, address, latitude, longitude FROM company LIMIT 40 OFFSET ?", sid)
+	rows, _ := db.Query("SELECT * FROM company LIMIT 40 OFFSET ?", sid)
 
 	for rows.Next() {
 		var company Company
-		err := rows.Scan(&company.Id, &company.Name, &company.Address,
+		err := rows.Scan(
+			&company.Id,
+			&company.Name,
+			&company.Address,
 			&company.Phone,
 			&company.Fax,
 			&company.Eopjong,
@@ -51,7 +54,8 @@ func (p Company) get(sid string) (companies []Company, err error) {
 			&company.R_enlistment_in,
 			&company.A_service,
 			&company.R_service,
-			&company.Latitude, &company.Longitude)
+			&company.Latitude,
+			&company.Longitude)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -64,13 +68,30 @@ func (p Company) get(sid string) (companies []Company, err error) {
 }
 
 func (p Company) getName(name string) (companies []Company, err error) {
-	query := fmt.Sprintf("SELECT id, name, address, latitude, longitude FROM company WHERE name LIKE '%% %s %%'", name)
+	query := fmt.Sprintf("SELECT * FROM company WHERE name LIKE '%%%s%%'", name)
 
 	rows, _ := db.Query(query)
 
 	for rows.Next() {
 		var company Company
-		err := rows.Scan(&company.Id, &company.Name, &company.Address, &company.Latitude, &company.Longitude)
+		err := rows.Scan(
+			&company.Id,
+			&company.Name,
+			&company.Address,
+			&company.Phone,
+			&company.Fax,
+			&company.Eopjong,
+			&company.Product,
+			&company.Scale,
+			&company.Research_field,
+			&company.A_number,
+			&company.R_number,
+			&company.A_enlistment_in,
+			&company.R_enlistment_in,
+			&company.A_service,
+			&company.R_service,
+			&company.Latitude,
+			&company.Longitude)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -88,7 +109,10 @@ func (p Company) getAll() (companies []Company, err error) {
 	}
 	for rows.Next() {
 		var company Company
-		err := rows.Scan(&company.Id, &company.Name, &company.Address,
+		err := rows.Scan(
+			&company.Id,
+			&company.Name,
+			&company.Address,
 			&company.Phone,
 			&company.Fax,
 			&company.Eopjong,
@@ -101,7 +125,8 @@ func (p Company) getAll() (companies []Company, err error) {
 			&company.R_enlistment_in,
 			&company.A_service,
 			&company.R_service,
-			&company.Latitude, &company.Longitude)
+			&company.Latitude,
+			&company.Longitude)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,7 +138,7 @@ func (p Company) getAll() (companies []Company, err error) {
 
 func main() {
 	var err error
-	db, err = sql.Open("mysql", "user:user1234@tcp(localhost:13306)/company?parseTime=true") // TODO dotenv 로 바꿔야함
+	db, err = sql.Open("mysql", "user:user1234@tcp(maria_db:3306)/company?parseTime=true") // TODO dotenv 로 바꿔야함
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -125,7 +150,7 @@ func main() {
 	}
 
 	router := gin.Default()
-
+	router.Use(CORSMiddleware())
 	router.GET("/companies", func(c *gin.Context) {
 		p := Company{}
 		companies, err := p.getAll()
@@ -189,4 +214,18 @@ func main() {
 
 	router.Run(":8000")
 
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methos", "GET")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
 }
