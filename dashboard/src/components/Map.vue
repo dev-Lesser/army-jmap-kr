@@ -41,7 +41,7 @@ export default {
         }
         
       
-      marker1;
+    //   marker1;
         console.log(map)
     }
 }
